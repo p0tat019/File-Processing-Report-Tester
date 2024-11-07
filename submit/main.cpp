@@ -222,26 +222,19 @@ public:
 
 int main() 
 {
-    string f = "BST-input.txt"; 
-    ifstream file(f); 
 
-    // 파일 열기 
-    if (!file.is_open()) {
-        cerr << "파일오류" << endl;
-    }
-
-    string line;
-    int key;
+    //string line;
+    //int key;
     BSTtree tree;
 
-    while (getline(file, line)) { //string이 안될경우 file을 cin으로 변경
-        string op = line.substr(0,1);
-        key = stoi(line.substr(2));
+    while (cin >> command >> key) { //string이 안될경우 file을 cin으로 변경
+        //string op = line.substr(0,1);
+        //key = stoi(line.substr(2));
 
-        if (op == "i"){
+        if (command == "i"){
             tree.insertBST(tree.root,key);
         }
-        else if( op == "d"){
+        else if( command == "d"){
             tree.deleteBST(tree.root,key);
         }
 
@@ -250,7 +243,7 @@ int main()
     }
 
     // 파일 닫기
-    file.close();
+    //file.close();
 
     //cout << tree.minNode(tree.root)->key << endl;
     //cout << tree.maxNode(tree.root)->key << endl;
