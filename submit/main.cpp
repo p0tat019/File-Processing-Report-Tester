@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <stack>
 using namespace std;
 
@@ -9,7 +8,7 @@ class Node{
     public:
         int key;
         int height;
-        string op;
+        char op;
         Node* left;
         Node* right;
         Node() : key(0), height(0), left(nullptr), right(nullptr) {}
@@ -140,7 +139,7 @@ public:
             stack.push(p);
             Node* tempNode = p;
             
-            if ((height((*p).left) )<=( height((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
                 p = p->right;
                 while(p->left != nullptr){
                     stack.push(p);
@@ -159,7 +158,7 @@ public:
 
             q = stack.top(); // 유의할 것 pop 아닐 수도 있음
             stack.pop();
-        
+            
         }   // now degree of p is 0 or 1
             // delete p from T
 
@@ -172,7 +171,7 @@ public:
             } else { // case of degree 1
                 if (p->left != nullptr){
                     if (q == nullptr){
-                        T = T->left; // case of root
+                        T = T->left; 
 
                     }else if (q->left == p){ // 비교가 아닌 대입을 넣어놓았었다.
                         q->left = p->left;
@@ -180,15 +179,15 @@ public:
                         q->right = p->left; // p->left가 right 이였음
                     }
                 } else {
-                    if (q == nullptr) { // case of root
+                    if (q == nullptr) { 
                         T = T->right;
                     }else if (q->left == p){
                         q->left = p->right;
                     }else {
                         q->right = p->right;
-                    }
                 }
             }
+        }
 
             delete p;
             
@@ -204,11 +203,9 @@ public:
 };
 
 
-
 int main() 
 {
-    /*
-    string f = "BST-input.txt"; 
+    /*    string f = "BST-input.txt"; 
     ifstream file(f); 
 
     // 파일 열기 
@@ -217,18 +214,19 @@ int main()
     }
     */
 
-    string line;
+    
+
+    //string line;
     int key;
+    char op;
     BSTtree tree;
 
-    while (getline(cin, line)) { //string이 안될경우 file을 cin으로 변경
-        string op = line.substr(0,1);
-        key = stoi(line.substr(2));
+    while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
 
-        if (op == "i"){
+        if (op == 'i'){
             tree.insertBST(tree.root,key);
         }
-        else if( op == "d"){
+        else if( op == 'd'){
             tree.deleteBST(tree.root,key);
         }
 
