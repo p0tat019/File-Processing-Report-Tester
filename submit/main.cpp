@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <stack>
 using namespace std;
 
@@ -14,7 +13,7 @@ class Node{
     public:
         int key;
         int height;
-        string op;
+        char op;
         Node* left;
         Node* right;
         Node() : key(0), height(0), left(nullptr), right(nullptr) {}
