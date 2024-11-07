@@ -122,7 +122,7 @@ public:
             return -1;  // deleteKey was not found
         }
         Node* p = T;
-        Node* q = NULL;
+        Node* q = nullptr;
         stack<Node*>stack;
 
         // find position of deleteKey while storing parent node on stack
@@ -145,26 +145,25 @@ public:
             stack.push(p);
             Node* tempNode = p;
             
-            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if ((size((*p).left) )<=( size((*p).right))){
+                q = p;           // q를 현재 노드로 설정
                 p = p->right;
                 while(p->left != nullptr){
+                    q = p;       
                     stack.push(p);
                     p = p->left;
                 }
             } else {
+                q = p;           // q를 현재 노드로 설정
                 p = p->left;
-                while (p->right != nullptr)
-                {
+                while (p->right != nullptr){
+                    q = p;      
                     stack.push(p);
                     p = p->right;
                 }
             }
 
             tempNode->key = p->key;
-
-            q = stack.top(); // 유의할 것 pop 아닐 수도 있음
-            stack.pop();
-            
         }   // now degree of p is 0 or 1
             // delete p from T
 
@@ -205,6 +204,7 @@ public:
                 q->height = 1 + max(height((*q).left),height((*q).right));
             } 
         }
+    
     
 };
 
