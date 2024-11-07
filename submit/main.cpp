@@ -114,10 +114,9 @@ public:
 
     }
 
-     int deleteBST(Node*& T,int deleteKey){
 
+    int deleteBST(Node*& T,int deleteKey){
         if (T == nullptr) {
-            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
             return -1;  // deleteKey was not found
         }
         Node* p = T;
@@ -128,83 +127,88 @@ public:
         while((p != nullptr) && (deleteKey != p->key)){
             q = p;
             stack.push(q);
-
-            if (deleteKey < (*p).key){
-                p = (*p).left;
-            } else {p = (*p).right;}            
+            if (deleteKey < p->key){
+                p = p->left;
+            } else {
+                p = p->right;
+            }            
         }
 
-         if (p == nullptr) {
-            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
+        if (p == nullptr) {
             return -1;  // deleteKey was not found
-         }
+        }
 
-
-        if ((p->left != nullptr) &&( p->right != nullptr)){ // case of degree 2 is reduced
+        if ((p->left != nullptr) && (p->right != nullptr)){ // case of degree 2
             stack.push(p);
             Node* tempNode = p;
+            Node* Next;
             
-            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if (size(p->left) <= size(p->right)){
+                Next = minNode(p->right);  // 오른쪽 서브트리의 최소값
+                q = p;
                 p = p->right;
-                while(p->left != nullptr){
+            
+                while(p != Next){ // 경로를 스택에 저장
                     stack.push(p);
+                    q = p;
                     p = p->left;
                 }
             } else {
+                Next = maxNode(p->left);   // 왼쪽 서브트리의 최대값
+                q = p;
                 p = p->left;
-                while (p->right != nullptr)
-                {
+
+                while(p != Next){
                     stack.push(p);
+                    q = p;
                     p = p->right;
                 }
             }
-
-            tempNode->key = p->key;
-
-            q = stack.top(); // 유의할 것 pop 아닐 수도 있음
-            stack.pop();
             
-        }   // now degree of p is 0 or 1
-            // delete p from T
+            tempNode->key = p->key;
+            q = stack.top();
+            stack.pop();
+        }
 
-            if((p->left == nullptr) &&( p->right == nullptr)){ // case of degree 0
+        if((p->left == nullptr) && (p->right == nullptr)){ // case of degree 0
+            if (q == nullptr){
+                T = nullptr;
+            } else if (q->left == p){
+                q->left = nullptr;
+            } else {
+                q->right = nullptr;
+            }
+        } else { // case of degree 1
+            if (p->left != nullptr){
                 if (q == nullptr){
-                    T = nullptr; // case of root
-                } else if (q->left == p) { // 대입연산자로 되어있었음
-                    q->left = nullptr;
-                } else {q->right = nullptr;}
-            } else { // case of degree 1
-                if (p->left != nullptr){
-                    if (q == nullptr){
-                        T = p->left; 
-
-                    }else if (q->left == p){ // 비교가 아닌 대입을 넣어놓았었다.
-                        q->left = p->left;
-                    } else {
-                        q->right = p->left; // p->left가 right 이였음
-                    }
+                    T = p->left;
+                } else if (q->left == p){
+                    q->left = p->left;
                 } else {
-                    if (q == nullptr) { 
-                        T = p->right;
-                    }else if (q->left == p){
-                        q->left = p->right;
-                    }else {
-                        q->right = p->right;
+                    q->right = p->left;
+                }
+            } else {
+                if (q == nullptr){
+                    T = p->right;
+                } else if (q->left == p){
+                    q->left = p->right;
+                } else {
+                    q->right = p->right;
                 }
             }
         }
 
-            delete p;
-            
-// update height while popping parent node from stack
-
-            while (!stack.empty()){
-                q = stack.top();
-                stack.pop();
-                q->height = 1 + max(height((*q).left),height((*q).right));
-            } 
+        delete p;
+        
+        while (!stack.empty()){
+            q = stack.top();
+            stack.pop();
+            q->height = 1 + max(height(q->left), height(q->right));
         }
-
+        
+        return 0;
+    }
+    
 };
 
 
