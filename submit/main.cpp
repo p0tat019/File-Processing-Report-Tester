@@ -114,7 +114,13 @@ public:
 
     }
 
+
     void deleteBST(Node*& T,int deleteKey){
+
+        if (T == nullptr) {
+            cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return;  // deleteKey was not found
+        }
         Node* p = T;
         Node* q = NULL;
         stack<Node*>stack;
@@ -171,7 +177,7 @@ public:
             } else { // case of degree 1
                 if (p->left != nullptr){
                     if (q == nullptr){
-                        T = T->left; 
+                        T = p->left; 
 
                     }else if (q->left == p){ // 비교가 아닌 대입을 넣어놓았었다.
                         q->left = p->left;
@@ -180,7 +186,7 @@ public:
                     }
                 } else {
                     if (q == nullptr) { 
-                        T = T->right;
+                        T = p->right;
                     }else if (q->left == p){
                         q->left = p->right;
                     }else {
