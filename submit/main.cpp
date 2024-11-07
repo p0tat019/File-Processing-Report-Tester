@@ -163,8 +163,10 @@ public:
 
             tempNode->key = p->key;
 
-            q = stack.top(); // 유의할 것 pop 아닐 수도 있음
-            stack.pop();
+            if (!stack.empty()) {
+                q = stack.top();
+                stack.pop();
+            }
             
             // 대체 노드 제거 및 자식을 부모에 연결
             if (q->left == p){
