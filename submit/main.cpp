@@ -114,7 +114,7 @@ public:
 
     }
 
-    int deleteBST(Node*& T,int deleteKey){
+     int deleteBST(Node*& T,int deleteKey){
 
         if (T == nullptr) {
             //cout << "d "<< deleteKey <<": The key does not exists" << endl;
