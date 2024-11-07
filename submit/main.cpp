@@ -56,12 +56,12 @@ public:
 
     Node* minNode(Node* T){
         if (!T->left) return T;
-        return minNode(T->left);
+        minNode(T->left);
     }
 
     Node* maxNode(Node* T){
         if (!T->right) return T;
-        return maxNode(T->right);
+        maxNode(T->right);
     }
 
     Node* getBSTNode() {
@@ -73,7 +73,7 @@ public:
     }
 
 
-    int insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
+    void insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
         Node* p = T;
         Node* q = NULL;
         stack<Node*>stack;
@@ -81,8 +81,8 @@ public:
          // find position to insert newKey while storing parent node on stack
         while(p != nullptr){
             if (newKey == (*p).key){ // pCar->speed = 120; // (*pCar).speed = 120;
-                //cout << "i "<< newKey <<": The key already exists" << endl;
-                return -1;
+                cout << "i "<< newKey <<": The key already exists" << endl;
+                return;
             }
             q = p;
             stack.push(q);
@@ -114,14 +114,9 @@ public:
 
     }
 
-      int deleteBST(Node*& T,int deleteKey){
-
-        if (T == nullptr) {
-            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
-            return -1;  // deleteKey was not found
-        }
+    void deleteBST(Node*& T,int deleteKey){
         Node* p = T;
-        Node* q = nullptr;
+        Node* q = NULL;
         stack<Node*>stack;
 
         // find position of deleteKey while storing parent node on stack
@@ -135,8 +130,8 @@ public:
         }
 
          if (p == nullptr) {
-            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
-            return -1;  // deleteKey was not found
+            cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return;  // deleteKey was not found
          }
 
 
@@ -176,7 +171,7 @@ public:
             } else { // case of degree 1
                 if (p->left != nullptr){
                     if (q == nullptr){
-                        T = p->left; 
+                        T = T->left; 
 
                     }else if (q->left == p){ // 비교가 아닌 대입을 넣어놓았었다.
                         q->left = p->left;
@@ -185,7 +180,7 @@ public:
                     }
                 } else {
                     if (q == nullptr) { 
-                        T = p->right;
+                        T = T->right;
                     }else if (q->left == p){
                         q->left = p->right;
                     }else {
@@ -204,7 +199,7 @@ public:
                 q->height = 1 + max(height((*q).left),height((*q).right));
             } 
         }
-
+    
 };
 
 
@@ -229,20 +224,13 @@ int main()
     while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
 
         if (op == 'i'){
-            if (tree.insertBST(tree.root, key) == -1) {
-                cout << "i " << key << ": The key already exists";
-            } else {
-                tree.print(tree.root);
-            }
+            tree.insertBST(tree.root,key);
         }
         else if( op == 'd'){
-            if (tree.deleteBST(tree.root, key) == -1) {
-                cout << "d " << key << ": The key does not exist";
-            } else {
-                tree.print(tree.root);
-            }
+            tree.deleteBST(tree.root,key);
         }
 
+        tree.print(tree.root);
         cout << endl;
     }
 
@@ -254,7 +242,6 @@ int main()
 
     return 0;
 }
-
 
 
 
