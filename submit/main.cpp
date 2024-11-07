@@ -204,10 +204,7 @@ public:
                 q->height = 1 + max(height((*q).left),height((*q).right));
             } 
         }
-    
-};
 
-    
 };
 
 
