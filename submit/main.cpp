@@ -37,7 +37,6 @@ public:
         delete T;
     }
 
-
     void print(Node* T) {
         if (!T) return;
         cout << '<';
@@ -166,10 +165,18 @@ public:
 
             q = stack.top(); // 유의할 것 pop 아닐 수도 있음
             stack.pop();
+            
+            // 대체 노드 제거 및 자식을 부모에 연결
+            if (q->left == p){
+                q->left = p->right;
+            } else {
+                q->right = p->left;
+            }
         
-        }   // now degree of p is 0 or 1
+        }
+           // now degree of p is 0 or 1
             // delete p from T
-
+        else {
             if((p->left == nullptr) &&( p->right == nullptr)){ // case of degree 0
                 if (q == nullptr){
                     T = nullptr; // case of root
@@ -196,6 +203,7 @@ public:
                     }
                 }
             }
+        }
 
             delete p;
             
@@ -214,7 +222,6 @@ public:
 
 int main() 
 {
-    /*
     string f = "BST-input.txt"; 
     ifstream file(f); 
 
@@ -222,13 +229,12 @@ int main()
     if (!file.is_open()) {
         cerr << "파일오류" << endl;
     }
-    */
 
     string line;
     int key;
     BSTtree tree;
 
-    while (getline(cin, line)) { //string이 안될경우 file을 cin으로 변경
+    while (getline(file, line)) { //string이 안될경우 file을 cin으로 변경
         string op = line.substr(0,1);
         key = stoi(line.substr(2));
 
@@ -244,14 +250,12 @@ int main()
     }
 
     // 파일 닫기
-    //file.close();
+    file.close();
 
     //cout << tree.minNode(tree.root)->key << endl;
     //cout << tree.maxNode(tree.root)->key << endl;
 
     return 0;
 }
-
-
 
 
