@@ -61,13 +61,15 @@ public:
     }
 
     Node* minNode(Node* T){
+        if (T == nullptr) return nullptr;
         if (!T->left) return T;
-        minNode(T->left);
+        return minNode(T->left);
     }
 
     Node* maxNode(Node* T){
+        if (T == nullptr) return nullptr;
         if (!T->right) return T;
-        maxNode(T->right);
+        return maxNode(T->right);
     }
 
     Node* getBSTNode() {
@@ -145,7 +147,7 @@ public:
             stack.push(p);
             Node* tempNode = p;
             
-            if ((height((*p).left) )<=( height((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
                 p = p->right;
                 while(p->left != nullptr){
                     stack.push(p);
@@ -212,6 +214,15 @@ public:
 
 int main() 
 {
+    /*
+    string f = "BST-input.txt"; 
+    ifstream file(f); 
+
+    // 파일 열기 
+    if (!file.is_open()) {
+        cerr << "파일오류" << endl;
+    }
+    */
 
     string line;
     int key;
@@ -231,6 +242,9 @@ int main()
         tree.print(tree.root);
         cout << endl;
     }
+
+    // 파일 닫기
+    //file.close();
 
     //cout << tree.minNode(tree.root)->key << endl;
     //cout << tree.maxNode(tree.root)->key << endl;
