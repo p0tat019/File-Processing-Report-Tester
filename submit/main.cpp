@@ -240,6 +240,9 @@ int main()
         cout << endl;
     }
 
+    tree.clear(tree.root);
+    tree.root = nullptr; 
+
     // 파일 닫기
     //file.close();
 
