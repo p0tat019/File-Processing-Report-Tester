@@ -56,12 +56,12 @@ public:
 
     Node* minNode(Node* T){
         if (!T->left) return T;
-        minNode(T->left);
+        return minNode(T->left);
     }
 
     Node* maxNode(Node* T){
         if (!T->right) return T;
-        maxNode(T->right);
+        return maxNode(T->right);
     }
 
     Node* getBSTNode() {
@@ -73,7 +73,7 @@ public:
     }
 
 
-    void insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
+    int insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
         Node* p = T;
         Node* q = NULL;
         stack<Node*>stack;
@@ -81,8 +81,8 @@ public:
          // find position to insert newKey while storing parent node on stack
         while(p != nullptr){
             if (newKey == (*p).key){ // pCar->speed = 120; // (*pCar).speed = 120;
-                cout << "i "<< newKey <<": The key already exists" << endl;
-                return;
+                //cout << "i "<< newKey <<": The key already exists" << endl;
+                return -1;
             }
             q = p;
             stack.push(q);
@@ -114,9 +114,15 @@ public:
 
     }
 
-    void deleteBST(Node*& T,int deleteKey){
+
+    int deleteBST(Node*& T,int deleteKey){
+
+        if (T == nullptr) {
+            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return -1;  // deleteKey was not found
+        }
         Node* p = T;
-        Node* q = NULL;
+        Node* q = nullptr;
         stack<Node*>stack;
 
         // find position of deleteKey while storing parent node on stack
@@ -130,8 +136,8 @@ public:
         }
 
          if (p == nullptr) {
-            cout << "d "<< deleteKey <<": The key does not exists" << endl;
-            return;  // deleteKey was not found
+            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return -1;  // deleteKey was not found
          }
 
 
@@ -139,26 +145,25 @@ public:
             stack.push(p);
             Node* tempNode = p;
             
-            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if ((size((*p).left) )<=( size((*p).right))){
+                q = p;           // q를 현재 노드로 설정
                 p = p->right;
                 while(p->left != nullptr){
+                    q = p;       
                     stack.push(p);
                     p = p->left;
                 }
             } else {
+                q = p;           // q를 현재 노드로 설정
                 p = p->left;
-                while (p->right != nullptr)
-                {
+                while (p->right != nullptr){
+                    q = p;      
                     stack.push(p);
                     p = p->right;
                 }
             }
 
             tempNode->key = p->key;
-
-            q = stack.top(); // 유의할 것 pop 아닐 수도 있음
-            stack.pop();
-            
         }   // now degree of p is 0 or 1
             // delete p from T
 
@@ -171,7 +176,7 @@ public:
             } else { // case of degree 1
                 if (p->left != nullptr){
                     if (q == nullptr){
-                        T = T->left; 
+                        T = p->left; 
 
                     }else if (q->left == p){ // 비교가 아닌 대입을 넣어놓았었다.
                         q->left = p->left;
@@ -180,7 +185,7 @@ public:
                     }
                 } else {
                     if (q == nullptr) { 
-                        T = T->right;
+                        T = p->right;
                     }else if (q->left == p){
                         q->left = p->right;
                     }else {
@@ -199,6 +204,7 @@ public:
                 q->height = 1 + max(height((*q).left),height((*q).right));
             } 
         }
+    
     
 };
 
@@ -224,13 +230,20 @@ int main()
     while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
 
         if (op == 'i'){
-            tree.insertBST(tree.root,key);
+            if (tree.insertBST(tree.root, key) == -1) {
+                cout << "i " << key << ": The key already exists";
+            } else {
+                tree.print(tree.root);
+            }
         }
         else if( op == 'd'){
-            tree.deleteBST(tree.root,key);
+            if (tree.deleteBST(tree.root, key) == -1) {
+                cout << "d " << key << ": The key does not exist";
+            } else {
+                tree.print(tree.root);
+            }
         }
 
-        tree.print(tree.root);
         cout << endl;
     }
 
