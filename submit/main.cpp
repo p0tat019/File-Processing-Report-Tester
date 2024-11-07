@@ -73,7 +73,7 @@ public:
     }
 
 
-    void insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
+    int insertBST(Node*& T,int newKey){ // *& 완전한 노드를 가져오기 위해 포인터 레퍼런스 사용
         Node* p = T;
         Node* q = NULL;
         stack<Node*>stack;
@@ -81,8 +81,8 @@ public:
          // find position to insert newKey while storing parent node on stack
         while(p != nullptr){
             if (newKey == (*p).key){ // pCar->speed = 120; // (*pCar).speed = 120;
-                cout << "i "<< newKey <<": The key already exists" << endl;
-                return;
+                //cout << "i "<< newKey <<": The key already exists" << endl;
+                return -1;
             }
             q = p;
             stack.push(q);
@@ -115,11 +115,11 @@ public:
     }
 
 
-    void deleteBST(Node*& T,int deleteKey){
+    int deleteBST(Node*& T,int deleteKey){
 
         if (T == nullptr) {
-            cout << "d "<< deleteKey <<": The key does not exists" << endl;
-            return;  // deleteKey was not found
+            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return -1;  // deleteKey was not found
         }
         Node* p = T;
         Node* q = NULL;
@@ -136,8 +136,8 @@ public:
         }
 
          if (p == nullptr) {
-            cout << "d "<< deleteKey <<": The key does not exists" << endl;
-            return;  // deleteKey was not found
+            //cout << "d "<< deleteKey <<": The key does not exists" << endl;
+            return -1;  // deleteKey was not found
          }
 
 
@@ -230,13 +230,20 @@ int main()
     while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
 
         if (op == 'i'){
-            tree.insertBST(tree.root,key);
+            if (tree.insertBST(tree.root, key) == -1) {
+                cout << "i " << key << ": The key already exists";
+            } else {
+                tree.print(tree.root);
+            }
         }
         else if( op == 'd'){
-            tree.deleteBST(tree.root,key);
+            if (tree.deleteBST(tree.root, key) == -1) {
+                cout << "d " << key << ": The key does not exist";
+            } else {
+                tree.print(tree.root);
+            }
         }
 
-        tree.print(tree.root);
         cout << endl;
     }
 
