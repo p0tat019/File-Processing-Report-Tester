@@ -222,19 +222,16 @@ public:
 
 int main() 
 {
-
-    //string line;
-    //int key;
+    char op;
+    int key;
     BSTtree tree;
 
-    while (cin >> command >> key) { //string이 안될경우 file을 cin으로 변경
-        //string op = line.substr(0,1);
-        //key = stoi(line.substr(2));
+    while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
 
-        if (command == "i"){
+        if (op == 'i'){
             tree.insertBST(tree.root,key);
         }
-        else if( command == "d"){
+        else if( op == 'd'){
             tree.deleteBST(tree.root,key);
         }
 
@@ -250,5 +247,6 @@ int main()
 
     return 0;
 }
+
 
 
