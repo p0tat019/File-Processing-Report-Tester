@@ -1,10 +1,6 @@
-/*
-* Dummy file입니다.
-* 본인이 테스트하고 싶은 내용으로 변경 후 사용하세요.
-*/
-
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <stack>
 using namespace std;
 
@@ -13,7 +9,7 @@ class Node{
     public:
         int key;
         int height;
-        char op;
+        string op;
         Node* left;
         Node* right;
         Node() : key(0), height(0), left(nullptr), right(nullptr) {}
@@ -35,6 +31,7 @@ public:
         clear((*T).right);
         delete T;
     }
+
 
     void print(Node* T) {
         if (!T) return;
@@ -59,15 +56,13 @@ public:
     }
 
     Node* minNode(Node* T){
-        if (T == nullptr) return nullptr;
         if (!T->left) return T;
-        return minNode(T->left);
+        minNode(T->left);
     }
 
     Node* maxNode(Node* T){
-        if (T == nullptr) return nullptr;
         if (!T->right) return T;
-        return maxNode(T->right);
+        maxNode(T->right);
     }
 
     Node* getBSTNode() {
@@ -145,7 +140,7 @@ public:
             stack.push(p);
             Node* tempNode = p;
             
-            if ((size((*p).left) )<=( size((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
+            if ((height((*p).left) )<=( height((*p).right))){ // 조건이 left가 아니라 right로 적혀있었음
                 p = p->right;
                 while(p->left != nullptr){
                     stack.push(p);
@@ -162,22 +157,12 @@ public:
 
             tempNode->key = p->key;
 
-            if (!stack.empty()) {
-                q = stack.top();
-                stack.pop();
-            }
-            
-            // 대체 노드 제거 및 자식을 부모에 연결
-            if (q->left == p){
-                q->left = p->right;
-            } else {
-                q->right = p->left;
-            }
+            q = stack.top(); // 유의할 것 pop 아닐 수도 있음
+            stack.pop();
         
-        }
-           // now degree of p is 0 or 1
+        }   // now degree of p is 0 or 1
             // delete p from T
-        else {
+
             if((p->left == nullptr) &&( p->right == nullptr)){ // case of degree 0
                 if (q == nullptr){
                     T = nullptr; // case of root
@@ -204,7 +189,6 @@ public:
                     }
                 }
             }
-        }
 
             delete p;
             
@@ -223,25 +207,34 @@ public:
 
 int main() 
 {
-    char op;
+    /*
+    string f = "BST-input.txt"; 
+    ifstream file(f); 
+
+    // 파일 열기 
+    if (!file.is_open()) {
+        cerr << "파일오류" << endl;
+    }
+    */
+
+    string line;
     int key;
     BSTtree tree;
 
-    while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
+    while (getline(cin, line)) { //string이 안될경우 file을 cin으로 변경
+        string op = line.substr(0,1);
+        key = stoi(line.substr(2));
 
-        if (op == 'i'){
+        if (op == "i"){
             tree.insertBST(tree.root,key);
         }
-        else if( op == 'd'){
+        else if( op == "d"){
             tree.deleteBST(tree.root,key);
         }
 
         tree.print(tree.root);
         cout << endl;
     }
-
-    tree.clear(tree.root);
-    tree.root = nullptr; 
 
     // 파일 닫기
     //file.close();
@@ -251,6 +244,7 @@ int main()
 
     return 0;
 }
+
 
 
 
