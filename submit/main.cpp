@@ -212,13 +212,6 @@ public:
 
 int main() 
 {
-    string f = "BST-input.txt"; 
-    ifstream file(f); 
-
-    // 파일 열기 
-    if (!file.is_open()) {
-        cerr << "파일오류" << endl;
-    }
 
     string line;
     int key;
@@ -238,9 +231,6 @@ int main()
         tree.print(tree.root);
         cout << endl;
     }
-
-    // 파일 닫기
-    file.close();
 
     //cout << tree.minNode(tree.root)->key << endl;
     //cout << tree.maxNode(tree.root)->key << endl;
