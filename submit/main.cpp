@@ -56,12 +56,12 @@ public:
 
     Node* minNode(Node* T){
         if (!T->left) return T;
-        minNode(T->left);
+        return minNode(T->left);
     }
 
     Node* maxNode(Node* T){
         if (!T->right) return T;
-        maxNode(T->right);
+        return maxNode(T->right);
     }
 
     Node* getBSTNode() {
