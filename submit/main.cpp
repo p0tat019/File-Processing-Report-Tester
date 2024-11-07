@@ -224,7 +224,7 @@ int main()
     int key;
     BSTtree tree;
 
-    while (getline(file, line)) { //string이 안될경우 file을 cin으로 변경
+    while (getline(cin, line)) { //string이 안될경우 file을 cin으로 변경
         string op = line.substr(0,1);
         key = stoi(line.substr(2));
 
