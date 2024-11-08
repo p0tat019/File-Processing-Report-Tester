@@ -112,7 +112,6 @@ public:
 
         if (p == nullptr) return -1; // 삭제할 노드가 없으면 -1 반환
 
- 
         if (p->left != nullptr && p->right != nullptr) {
             stack.push(p);
             Node* r = maxNode(p->left); // 오른쪽 서브트리의 최소 노드
@@ -156,50 +155,36 @@ public:
 
 int main() 
 {
-    /*    string f = "BST-input.txt"; 
-    ifstream file(f); 
-
-    // 파일 열기 
-    if (!file.is_open()) {
-        cerr << "파일오류" << endl;
-    }
-    */
-
-    
-
-    //string line;
     int key;
     char op;
     BSTtree tree;
 
-    while (cin >> op >> key) { //string이 안될경우 file을 cin으로 변경
+    while (true) {
+        if (!(cin >> op >> key)) {
+            cin.clear(); // cin 상태를 초기화
+            cin.ignore(10000, '\n'); // 잘못된 입력 무시
+            continue; // 다음 루프 반복
+        }
 
-        if (op == 'i'){
+        if (op == 'i') {
             if (tree.insertBST(tree.root, key) == -1) {
-                cout << "i " << key << ": The key already exists";
+                cout << "i " << key << ": The key already exists" << endl;
             } else {
                 tree.print(tree.root);
+                cout << endl;
             }
-        }
-        else if( op == 'd'){
+        } else if (op == 'd') {
             if (tree.deleteBST(tree.root, key) == -1) {
-                cout << "d " << key << ": The key does not exist";
+                cout << "d " << key << ": The key does not exist" << endl;
             } else {
                 tree.print(tree.root);
+                cout << endl;
             }
+        } else {
+            cout << "Invalid operation." << endl;
         }
-
-        cout << endl;
     }
 
-    // 파일 닫기
-    //file.close();
     tree.clear(tree.root);
-    //cout << tree.minNode(tree.root)->key << endl;
-    //cout << tree.maxNode(tree.root)->key << endl;
-
     return 0;
 }
-
-
-
