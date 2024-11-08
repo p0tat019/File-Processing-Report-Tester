@@ -39,17 +39,21 @@ public:
         return T ? T->height : -1;
     }
 
-    void updateSize(Node* T) {
+    void Size(Node* T) {
         if (T) T->size = 1 + (T->left ? T->left->size : 0) + (T->right ? T->right->size : 0);
     }
 
     Node* minNode(Node* T) {
-        while (T && T->left) T = T->left;
+        while (T != nullptr && T->left != nullptr) {
+            T = T->left; // 왼쪽 자식으로 이동
+        }
         return T;
     }
 
     Node* maxNode(Node* T) {
-        while (T && T->right) T = T->right;
+        while (T != nullptr && T->right != nullptr) {
+            T = T->right; // 오른쪽 자식으로 이동
+        }
         return T;
     }
 
@@ -86,7 +90,7 @@ public:
             q = stack.top();
             stack.pop();
             q->height = 1 + max(height(q->left), height(q->right));
-            updateSize(q);  // size 업데이트
+            Size(q);  // size 업데이트
         }
 
         return 0;
@@ -108,20 +112,21 @@ public:
 
         if (p == nullptr) return -1; // 삭제할 노드가 없으면 -1 반환
 
-        // degree 2인 경우, 오른쪽 서브트리의 최소 노드로 대체
+ 
         if (p->left != nullptr && p->right != nullptr) {
             stack.push(p);
-            Node* successor = maxNode(p->left); // 오른쪽 서브트리의 최소 노드
-            p->key = successor->key; // 현재 노드 키를 successor의 키로 교체
+            Node* r = maxNode(p->left); // 오른쪽 서브트리의 최소 노드
+            p->key = r->key; // 현재 노드 키를 r의 키로 교체
             q = p;
             p = p->left;
 
-            // successor를 찾아서 제거하기 위한 탐색
-            while (p != successor) {
+            while (p != r) {
                 q = p;
                 stack.push(q);
-                p = p->left;
+                p = p->right;
             }
+            // successor 노드 삭제
+            p = r;
         }
 
         // degree 1 또는 0 처리
@@ -142,13 +147,12 @@ public:
             q = stack.top();
             stack.pop();
             q->height = 1 + max(height(q->left), height(q->right));
-            updateSize(q);  // size 업데이트
+            Size(q);  // size 업데이트
         }
 
         return 0;
     }
-};
-                
+};       
 
 int main() 
 {
@@ -190,7 +194,7 @@ int main()
 
     // 파일 닫기
     //file.close();
-
+    tree.clear(tree.root);
     //cout << tree.minNode(tree.root)->key << endl;
     //cout << tree.maxNode(tree.root)->key << endl;
 
