@@ -5,11 +5,9 @@ using namespace std;
 class Node {
 public:
     int key;
-    int height;
-    int size;  // 서브트리의 크기를 저장
     Node* left;
     Node* right;
-    Node() : key(0), height(0), size(1), left(nullptr), right(nullptr) {}
+    Node(int k) : key(k), left(nullptr), right(nullptr) {}
 };
 
 class BSTtree {
@@ -35,123 +33,49 @@ public:
         cout << '>';
     }
 
-    int height(Node* T) {
-        return T ? T->height : -1;
-    }
-
-    void Size(Node* T) {
-        if (T) T->size = 1 + (T->left ? T->left->size : 0) + (T->right ? T->right->size : 0);
-    }
-
-    Node* minNode(Node* T) {
-        while (T != nullptr && T->left != nullptr) {
-            T = T->left; // 왼쪽 자식으로 이동
-        }
-        return T;
-    }
-
-    Node* maxNode(Node* T) {
-        while (T != nullptr && T->right != nullptr) {
-            T = T->right; // 오른쪽 자식으로 이동
-        }
-        return T;
-    }
-
-    Node* getBSTNode() {
-        Node* newnode = new Node();
-        return newnode;
-    }
-
     int insertBST(Node*& T, int newKey) {
-        Node* p = T;
-        Node* q = nullptr;
-        stack<Node*> stack;
-
-        while (p != nullptr) {
-            if (newKey == p->key) return -1;
-            q = p;
-            stack.push(q);
-            if (newKey < p->key) p = p->left;
-            else p = p->right;
-        }
-
-        Node* newNode = getBSTNode();
-        newNode->key = newKey;
-
         if (T == nullptr) {
-            T = newNode;
-        } else if (newKey < q->key) {
-            q->left = newNode;
-        } else {
-            q->right = newNode;
+            T = new Node(newKey);
+            return 0;
         }
-
-        while (!stack.empty()) {
-            q = stack.top();
-            stack.pop();
-            q->height = 1 + max(height(q->left), height(q->right));
-            Size(q);  // size 업데이트
+        if (newKey < T->key) {
+            return insertBST(T->left, newKey);
+        } else if (newKey > T->key) {
+            return insertBST(T->right, newKey);
         }
-
-        return 0;
+        return -1; // 중복 키
     }
 
     int deleteBST(Node*& T, int deleteKey) {
         if (T == nullptr) return -1;
-        Node* p = T;
-        Node* q = nullptr;
-        stack<Node*> stack;
 
-        // 삭제할 노드 탐색
-        while (p != nullptr && deleteKey != p->key) {
-            q = p;
-            stack.push(q);
-            if (deleteKey < p->key) p = p->left;
-            else p = p->right;
-        }
-
-        if (p == nullptr) return -1; // 삭제할 노드가 없으면 -1 반환
-
-        if (p->left != nullptr && p->right != nullptr) {
-            stack.push(p);
-            Node* r = maxNode(p->left); // 오른쪽 서브트리의 최소 노드
-            p->key = r->key; // 현재 노드 키를 r의 키로 교체
-            q = p;
-            p = p->left;
-
-            while (p != r) {
-                q = p;
-                stack.push(q);
-                p = p->right;
-            }
-            // successor 노드 삭제
-            p = r;
-        }
-
-        // degree 1 또는 0 처리
-        Node* child = (p->left != nullptr) ? p->left : p->right;
-
-        if (q == nullptr) { // 삭제할 노드가 루트 노드인 경우
-            T = child;
-        } else if (q->left == p) {
-            q->left = child;
+        if (deleteKey < T->key) {
+            return deleteBST(T->left, deleteKey);
+        } else if (deleteKey > T->key) {
+            return deleteBST(T->right, deleteKey);
         } else {
-            q->right = child;
+            // 삭제할 노드 발견
+            if (T->left == nullptr) {
+                Node* temp = T->right;
+                delete T;
+                T = temp;
+            } else if (T->right == nullptr) {
+                Node* temp = T->left;
+                delete T;
+                T = temp;
+            } else {
+                // 두 자식이 모두 있는 경우
+                Node* minNode = T->right;
+                while (minNode->left != nullptr) {
+                    minNode = minNode->left;
+                }
+                T->key = minNode->key;
+                deleteBST(T->right, minNode->key);
+            }
+            return 0;
         }
-
-        delete p;
-
-        // 부모 노드들의 height와 size 업데이트
-        while (!stack.empty()) {
-            q = stack.top();
-            stack.pop();
-            q->height = 1 + max(height(q->left), height(q->right));
-            Size(q);  // size 업데이트
-        }
-
-        return 0;
     }
-};       
+};
 
 int main() 
 {
