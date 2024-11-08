@@ -111,10 +111,10 @@ public:
         // degree 2인 경우, 오른쪽 서브트리의 최소 노드로 대체
         if (p->left != nullptr && p->right != nullptr) {
             stack.push(p);
-            Node* successor = minNode(p->right); // 오른쪽 서브트리의 최소 노드
+            Node* successor = maxNode(p->left); // 오른쪽 서브트리의 최소 노드
             p->key = successor->key; // 현재 노드 키를 successor의 키로 교체
             q = p;
-            p = p->right;
+            p = p->left;
 
             // successor를 찾아서 제거하기 위한 탐색
             while (p != successor) {
@@ -148,7 +148,6 @@ public:
         return 0;
     }
 };
-
                 
 
 int main() 
