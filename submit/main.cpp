@@ -1,12 +1,15 @@
 #include <iostream>
+#include <stack>
 using namespace std;
 
 class Node {
 public:
     int key;
+    int height;
+    int size;  // 서브트리의 크기를 저장
     Node* left;
     Node* right;
-    Node(int k) : key(k), left(nullptr), right(nullptr) {}
+    Node() : key(0), height(0), size(1), left(nullptr), right(nullptr) {}
 };
 
 class BSTtree {
@@ -23,101 +26,139 @@ public:
         delete T;
     }
 
-    void print(Node* T) {
+    void inorder(Node* T) {
         if (!T) return;
         cout << '<';
-        print(T->left);
+        inorder(T->left);
         cout << ' ' << T->key << ' ';
-        print(T->right);
+        inorder(T->right);
         cout << '>';
     }
 
-    int insertBST(int newKey) {
-        Node* newNode = new Node(newKey);
-        if (root == nullptr) {
-            root = newNode;
-            return 0;
+    int height(Node* T) {
+        return T ? T->height : -1;
+    }
+
+    void updateSize(Node* T) {
+        if (T) T->size = 1 + (T->left ? T->left->size : 0) + (T->right ? T->right->size : 0);
+    }
+
+    int size(Node* T){
+        return T->size;
+    }
+
+    Node* minNode(Node* T) {
+        while (T != nullptr && T->left != nullptr) {
+            T = T->left; // 왼쪽 자식으로 이동
+        }
+        return T;
+    }
+
+    Node* maxNode(Node* T) {
+        while (T != nullptr && T->right != nullptr) {
+            T = T->right; // 오른쪽 자식으로 이동
+        }
+        return T;
+    }
+
+    Node* getBSTNode() {
+        Node* newnode = new Node();
+        return newnode;
+    }
+
+    int insertBST(Node*& T, int newKey) {
+        Node* p = T;
+        Node* q = nullptr;
+        stack<Node*> stack;
+
+        while (p != nullptr) {
+            if (newKey == p->key) return -1;
+            q = p;
+            stack.push(q);
+            if (newKey < p->key) p = p->left;
+            else p = p->right;
         }
 
-        Node* current = root;
-        Node* parent = nullptr;
+        Node* newNode = getBSTNode();
+        newNode->key = newKey;
 
-        while (current != nullptr) {
-            parent = current;
-            if (newKey < current->key) {
-                current = current->left;
-            } else if (newKey > current->key) {
-                current = current->right;
-            } else {
-                delete newNode; // 중복 키이므로 메모리 해제
-                return -1; // 중복 키
-            }
-        }
-
-        if (newKey < parent->key) {
-            parent->left = newNode;
+        if (T == nullptr) {
+            T = newNode;
+        } else if (newKey < q->key) {
+            q->left = newNode;
         } else {
-            parent->right = newNode;
+            q->right = newNode;
+        }
+
+        while (!stack.empty()) {
+            q = stack.top();
+            stack.pop();
+            q->height = 1 + max(height(q->left), height(q->right));
+            updateSize(q);  // size 업데이트
         }
 
         return 0;
     }
 
-    int deleteBST(int deleteKey) {
-        Node* current = root;
-        Node* parent = nullptr;
+    int deleteBST(Node*& T, int deleteKey) {
+        if (T == nullptr) return -1; // 삭제할 노드가 없으면 -1 반환
+        Node* p = T;
+        Node* q = nullptr; // 부모 노드
+        stack<Node*> stack;
 
         // 삭제할 노드 탐색
-        while (current != nullptr && current->key != deleteKey) {
-            parent = current;
-            if (deleteKey < current->key) {
-                current = current->left;
-            } else {
-                current = current->right;
-            }
+        while (p != nullptr && deleteKey != p->key) {
+            q = p;
+            stack.push(q);
+            if (deleteKey < p->key) p = p->left;
+            else p = p->right;
         }
 
-        if (current == nullptr) return -1; // 삭제할 노드가 없음
+        if (p == nullptr) return -1; // 삭제할 노드가 없으면 -1 반환
 
-        // 삭제할 노드가 발견됨
-        if (current->left == nullptr && current->right == nullptr) { // 자식이 없는 경우
-            if (current == root) {
-                root = nullptr; // 루트 노드 삭제
-            } else if (parent->left == current) {
-                parent->left = nullptr;
+        // degree 0 
+        if (p->left == nullptr && p->right == nullptr) {
+            if (p == T) { // 루트 노드인 경우
+                delete p;
+                T = nullptr; // 루트 노드 삭제
             } else {
-                parent->right = nullptr;
+                if (q->left == p) {
+                    q->left = nullptr;
+                } else {
+                    q->right = nullptr;
+                }
+                delete p;
             }
-        } else if (current->left == nullptr || current->right == nullptr) { // 자식이 하나인 경우
-            Node* child = (current->left != nullptr) ? current->left : current->right;
-            if (current == root) {
-                root = child; // 루트 노드가 삭제될 때
-            } else if (parent->left == current) {
-                parent->left = child;
+        }
+        // degree 1
+        else if (p->left == nullptr || p->right == nullptr) {
+            Node* child = (p->left != nullptr) ? p->left : p->right;
+            if (p == T) { // 루트 노드인 경우
+                T = child; // 루트 노드가 삭제될 때
             } else {
-                parent->right = child;
+                if (q->left == p) {
+                    q->left = child;
+                } else {
+                    q->right = child;
+                }
             }
-        } else { // 자식이 두 개인 경우
-            Node* successor = current->right;
-            Node* successorParent = current;
-
-            while (successor->left != nullptr) {
-                successorParent = successor;
-                successor = successor->left;
-            }
-
-            current->key = successor->key; // successor의 키로 현재 노드의 키를 교체
-
-            // successor 노드 삭제
-            if (successorParent->left == successor) {
-                successorParent->left = successor->right;
-            } else {
-                successorParent->right = successor->right;
-            }
-            current = successor; // 메모리 해제할 노드
+            delete p;
+        }
+        // degree 2 
+        else {
+            Node* r = minNode(p->right); // 오른쪽 서브트리의 최소 노드
+            p->key = r->key; 
+            deleteBST(p->right, r->key);
         }
 
-        delete current; // 노드 메모리 해제
+        // height와 size 업데이트
+        while (!stack.empty()) {
+            q = stack.top();
+            stack.pop();
+            q->height = 1 + max(height(q->left), height(q->right));
+            updateSize(q);  // size 업데이트
+        }
+
         return 0;
     }
 };
@@ -130,7 +171,7 @@ int main()
 
     while (true) {
         if (!(cin >> op >> key)) {
-            cout << "Invalid input. Please enter a valid operation and key." << endl;
+            cout << "Invalid input." << endl;
             cin.clear(); // cin 상태를 초기화
             cin.ignore(10000, '\n'); // 잘못된 입력 무시
             continue; // 다음 루프 반복
@@ -140,18 +181,18 @@ int main()
             if (tree.insertBST(key) == -1) {
                 cout << "i " << key << ": The key already exists" << endl;
             } else {
-                tree.print(tree.root);
+                tree.inorder(tree.root);
                 cout << endl;
             }
         } else if (op == 'd') {
             if (tree.deleteBST(key) == -1) {
                 cout << "d " << key << ": The key does not exist" << endl;
             } else {
-                tree.print(tree.root);
+                tree.inorder(tree.root);
                 cout << endl;
             }
         } else {
-            cout << "Invalid operation. Please use 'i' for insert or 'd' for delete." << endl;
+            cout << "Invalid operation." << endl;
         }
     }
 
